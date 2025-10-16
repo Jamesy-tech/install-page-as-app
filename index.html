@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Install App Example</title>
   <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-  <button id="installBtn" style="display:none;">Install App</button>
-
+  <button id="installBtn" style="display:none">Install App</button>
   <script>
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
-
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); // Prevent auto prompt
+      e.preventDefault();
       deferredPrompt = e;
-      installBtn.style.display = 'block';
+      installBtn.style.display = 'inline-block';
     });
-
     installBtn.addEventListener('click', async () => {
       if (!deferredPrompt) return;
-      deferredPrompt.prompt(); // Show install prompt
-
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        console.log('User accepted install');
-      } else {
-        console.log('User dismissed install');
-      }
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
       deferredPrompt = null;
+      installBtn.style.display = 'none';
     });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    }
   </script>
 </body>
 </html>
