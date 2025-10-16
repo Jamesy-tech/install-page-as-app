@@ -1,7 +1,7 @@
 {
   "name": "Install Page as App",
   "short_name": "App",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "icons": [
     {
