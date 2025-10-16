@@ -11,14 +11,12 @@
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
 
-    // Listen for beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault(); // Prevent auto prompt
       deferredPrompt = e;
-      installBtn.style.display = 'block'; // Show button
+      installBtn.style.display = 'block';
     });
 
-    // Handle button click
     installBtn.addEventListener('click', async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt(); // Show install prompt
