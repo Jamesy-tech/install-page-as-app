@@ -3,30 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Install App Example</title>
-  <meta name="theme-color" content="#ffffff">
+  <title>Install App</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <button id="installBtn" style="display:none">Install App</button>
+  <button id="installBtn">Install App</button>
   <script>
-    let deferredPrompt;
-    const installBtn = document.getElementById('installBtn');
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-block';
-    });
-    installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = 'none';
-    });
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    function setupInstall() {
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        deferredPrompt = e;
+      });
+
+      document.getElementById('installBtn').addEventListener('click', async () => {
+        if (!deferredPrompt) {
+          alert('Your device does not meet the requirements to download.');
+          return;
+        }
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      });
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+      }
     }
+
+    setupInstall();
   </script>
 </body>
 </html>
