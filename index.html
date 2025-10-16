@@ -9,28 +9,29 @@
 <body>
   <button id="installBtn">Install App</button>
   <script>
-    async function installApp() {
-      let deferredPrompt;
+    let deferredPrompt;
+
+    function setupInstall() {
       window.addEventListener('beforeinstallprompt', e => {
         e.preventDefault();
         deferredPrompt = e;
       });
-
       if ('serviceWorker' in navigator) {
-        await navigator.serviceWorker.register('sw.js').catch(()=>{});
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
       }
+    }
 
-      await new Promise(r => setTimeout(r, 100)); 
-
+    async function installApp() {
       if (!deferredPrompt) {
         alert('Your device does not meet the requirements to download.');
         return;
       }
-
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
     }
 
+    window.addEventListener('load', setupInstall);
     document.getElementById('installBtn').addEventListener('click', installApp);
   </script>
 </body>
