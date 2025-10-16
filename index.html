@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Install App Example</title>
+  <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+  <button id="installBtn" style="display:none;">Install App</button>
+
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    // Listen for beforeinstallprompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault(); // Prevent auto prompt
+      deferredPrompt = e;
+      installBtn.style.display = 'block'; // Show button
+    });
+
+    // Handle button click
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt(); // Show install prompt
+
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User accepted install');
+      } else {
+        console.log('User dismissed install');
+      }
+      deferredPrompt = null;
+    });
+  </script>
+</body>
+</html>
